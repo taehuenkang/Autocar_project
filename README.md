@@ -1,5 +1,4 @@
-# Autocar_project
-BOARD: ATmega128a
+## 🚗 `AutoCar_Project` – FSM 기반 AVR 자율주행차
 
 ```markdown
 # 🚗 AutoCar FSM Project – AVR 기반 자율주행차
