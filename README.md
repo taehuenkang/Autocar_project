@@ -1,30 +1,62 @@
 # Autocar_project
 BOARD: ATmega128a
 
+```markdown
+# 🚗 AutoCar FSM Project – AVR 기반 자율주행차
 
-| 기술 | 설명 |
-| --- | --- |
-| **UART** | 블루투스 수동 제어 통신 |
-| **I2C** | LCD 제어 (I2C LCD 1602) |
-| **PWM** | 모터 속도 제어 및 사이렌 (Timer1, Timer3) |
-| **타이머/인터럽트** | Timer0(overflow), Timer1(PWM), Timer2(거리측정), Timer3(사이렌) |
-| **초음파 센서** | 장애물 거리 감지 (좌/우/중앙) |
-| **FSM 기반 알고리즘** | 주행 상태 전환 및 회피 로직 |
-| **FND 디스플레이** | 수신 명령 시 상태 표시 |
+A simple FSM-controlled embedded car using **ATmega128a** microcontroller and ultrasonic sensors.
 
+---
 
-### 🔹 수동 모드
+## 🎯 Features
 
-- 블루투스를 통한 명령어 수신
-    - `f` (forward), `l` (left), `b` (backward), `r` (right), `s` (stop)
-- LCD: `Chill Driver` 출력
-- FND: 명령어에 따른 상태 출력
-- 사이렌 및 회피 기능 없음
+- FSM-based auto driving:
+  - Forward / Stop / Avoid obstacle / Reverse
+- Manual mode via **UART Bluetooth**
+- Real-time LCD and FND display
+- Interrupt & Timer-based control
 
-### 🔸 자동 모드
+---
 
-- 주기적 초음파 거리 측정 (`ultra_check >= 80`)
-- 장애물 거리 기반 회피, 후진, 방향전환
-- LCD: `Mi chill Driver` 출력
-- 사이렌 ON (`Auto_siren()`)
-- 거리 기반 FSM 알고리즘 실행
+## 💡 Tech Stack
+
+| Item          | Description                      |
+|---------------|----------------------------------|
+| MCU           | ATmega128a (AVR)                 |
+| Sensors       | 3x Ultrasonic (Left, Center, Right) |
+| Display       | LCD1602 (I2C), 4-digit FND       |
+| Comm          | UART (Bluetooth), I2C            |
+| Language      | C (Atmel Studio)                 |
+
+---
+
+## 🧭 Architecture
+
+```txt
+Manual Mode     <----- Bluetooth (UART)
+  │
+  └──> LCD, FND ←── FSM ←── Ultrasonic Sensors
+                      │
+                   Timer 0~3: PWM, Delay, Beep, Measurement
+🔁 FSM Logic
+Forward: Safe distance
+
+Avoid: If front obstacle
+
+Turn left/right: Side detection
+
+Reverse: Stuck state
+
+🔧 Timers Used
+Timer	Purpose
+Timer0	1ms system tick
+Timer1	PWM motor control
+Timer2	Ultrasonic echo timer
+Timer3	Siren sound
+
+▶️ Run Instructions
+Build & flash via Atmel Studio
+
+Use serial Bluetooth app to send:
+
+f: forward / b: backward / l: left / r: right / s: stop
